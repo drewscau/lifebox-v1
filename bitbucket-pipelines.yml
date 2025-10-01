@@ -1,0 +1,33 @@
+image: php:7.4-fpm
+
+pipelines:
+  default:
+    - step:
+        name: Build and test
+        caches:
+          - composer
+        script:
+          - apt-get update && apt-get install -qy git curl libmcrypt-dev mariadb-client ghostscript
+          - yes | pecl install mcrypt-1.0.3
+          - docker-php-ext-install pdo_mysql bcmath exif
+          - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+          - cd lifebox-api
+          - composer install
+          - cp .env.pipelines .env
+          - cp .env.pipelines .env.testing
+          - php artisan migrate --env=testing
+          - php artisan passport:keys
+          - php artisan config:cache --env=testing
+          - ./run_tests_pipelines.sh
+          - ./vendor/bin/phpcs app/
+        services:
+          - mysql
+definitions:
+  services:
+    mysql:
+      image: mariadb:10.5.9-focal
+      environment:
+        MYSQL_DATABASE: 'lifebox_test'
+        MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
+        MYSQL_USER: 'lifebox_test'
+        MYSQL_PASSWORD: 'lifebox_test'

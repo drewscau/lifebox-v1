@@ -1,0 +1,120 @@
+
+.width-full {
+  width: 100% !important;
+}
+
+.height-full {
+  height: 100vh;
+}
+
+.min-height-full {
+  min-height: 100vh;
+}
+
+.center-forgot-password-form-y {
+  margin-top: 20vh;
+}
+
+.center-form-y {
+  margin-top: 20vh;
+}
+
+
+.upper-height {
+  min-height: 40vh;
+  height: 40vh;
+}
+
+.lower-height {
+  min-height: 60vh;
+}
+
+.height-neutral {
+  height: auto;
+}
+
+.font-white {
+  color: $white !important;
+}
+
+.font-dark-grey {
+  color: $dark-grey !important;
+}
+
+.font-green {
+  color: $primary-color !important;
+}
+
+form.user {
+
+  width: 100% !important;
+
+  .custom-checkbox.small {
+    label {
+      line-height: 1.5rem;
+    }
+  }
+
+  .form-control-user {
+    font-size: 0.8rem;
+    border-radius: $border-radius;
+    padding: 1.5rem 1rem;
+  }
+
+  .btn-user {
+    font-size: 0.8rem;
+    border-radius: $border-radius;
+    padding: 0.75rem 1rem;
+  }
+
+}
+
+.login-wrap-body {
+    margin-top: 8rem !important;
+    margin-bottom: 8rem !important;
+}
+
+.register-wrap-body {
+    margin-top: 6.5rem !important;
+    margin-bottom: 6.5rem !important;
+}
+
+// custom styles per screen resolution
+
+@media only screen and (max-width: 575px) {
+  .header-adjustments {
+      margin-top: -5%;
+      margin-bottom: 5%;
+  }
+  .bottom-spacing-on-small {
+      margin-bottom: 3vh;
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  .header-adjustments {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+  }
+}
+
+// buttons
+
+.btn-mobile-landing {
+  border: 5px solid #00cd46;
+  border-radius: 10px;
+  background-color: transparent;
+  color: $white;
+}
+
+.btn-mobile-landing:hover, .btn-mobile-landing:focus {
+  background-color: #00cd46;
+  outline: none !important;
+  box-shadow: none;
+  color: $white;
+}
+
+.guest-btns:hover, .guest-btns:active {
+  color: $white !important;
+}

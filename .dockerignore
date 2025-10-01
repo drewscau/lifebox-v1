@@ -1,0 +1,9 @@
+node_modules/
+.git
+mysql/
+lifebox-lambda/
+lifebox-api/node_modules/
+lifebox-api/storage
+lifebox-api/vendor
+lifebox-api/tests
+test/

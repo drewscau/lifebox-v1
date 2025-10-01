@@ -1,0 +1,20 @@
+.page {
+    &.home {
+        //background: #777;
+    }
+}
+
+.applayout {
+    .header {
+        background: $primary-color;
+        margin-bottom: 15px;
+
+        .logo {
+            text-align: center;
+            h5 {
+                color: #fff;
+                font-size: 30px;
+            }
+        }
+    }
+}

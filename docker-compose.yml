@@ -1,0 +1,147 @@
+version: '3'
+
+networks:
+  laravel:
+
+services:
+  site:
+    build:
+      context: .
+      dockerfile: nginx.dockerfile
+    container_name: nginx_lifebox
+    ports:
+      - "8080:80"
+      - ${WEB_PORT:-443}:443
+    volumes:
+      - ./lifebox-api:/var/www/html:delegated
+    depends_on:
+      - php
+      - mysql
+    networks:
+      - laravel
+    environment:
+      GOOGLE_APPLICATION_CREDENTIALS: ${GOOGLE_APPLICATION_CREDENTIALS}
+      
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: pma_lifebox
+    links:
+      - mysql
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+    restart: always
+    ports:
+      - 8081:80
+    networks:
+      - laravel
+
+  mysql:
+    image: mariadb:10.5.9-focal
+    container_name: mysql_lifebox
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: lifebox
+      MYSQL_USER: lifebox
+      MYSQL_PASSWORD: lifebox
+      MYSQL_ROOT_PASSWORD: lifebox
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    networks:
+      - laravel
+    volumes:
+    - ./mysql:/var/lib/mysql
+
+  mysql_test:
+    image: mariadb:10.5.9-focal
+    container_name: mysql_test_lifebox
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "4406:3306"
+    environment:
+      MYSQL_DATABASE: lifebox_test
+      MYSQL_USER: lifebox_test
+      MYSQL_PASSWORD: lifebox_test
+      MYSQL_ROOT_PASSWORD: lifebox_test
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    networks:
+      - laravel
+    volumes:
+      - ./mysql_test:/var/lib/mysql
+
+  mysql_tradebox:
+    image: mariadb:10.5.9-focal
+    container_name: mysql_tradebox
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "5506:3306"
+    environment:
+      MYSQL_DATABASE: tradebox
+      MYSQL_USER: tradebox
+      MYSQL_PASSWORD: tradebox
+      MYSQL_ROOT_PASSWORD: tradeboxD
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    networks:
+      - laravel
+    volumes:
+      - ./mysql_tradebox:/var/lib/mysql
+
+  php:
+    build:
+      context: .
+      dockerfile: php.dockerfile
+    container_name: php_lifebox
+    volumes:
+      - ./lifebox-api:/var/www/html:delegated
+    ports:
+      - "9000:9000"
+    networks:
+      - laravel
+
+  composer:
+    build:
+      context: .
+      dockerfile: composer.dockerfile
+    container_name: composer_lifebox
+    volumes:
+      - ./lifebox-api:/var/www/html
+    working_dir: /var/www/html
+    depends_on:
+      - php
+    user: laravel
+    networks:
+      - laravel
+    entrypoint: ['composer', '--ignore-platform-reqs']
+
+  artisan:
+    build:
+      context: .
+      dockerfile: php.dockerfile
+    container_name: artisan_lifebox
+    volumes:
+      - ./lifebox-api:/var/www/html:delegated
+    depends_on:
+      - mysql
+    working_dir: /var/www/html
+    user: laravel
+    entrypoint: ['php', '/var/www/html/artisan']
+    networks:
+      - laravel
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    restart: always
+    ports:
+      - 1025:1025
+      - 8025:8025
+    networks:
+      - laravel
